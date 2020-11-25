@@ -32,7 +32,7 @@ import Vue from 'vue'
 import { Octokit } from '@octokit/rest'
 
 const octokit = new Octokit({
-  auth: 'de13e00ebb986e404d47abfceaeb8ba7e546091f'
+  auth: process.env.GITHUB_SECRET
 })
 
 export default Vue.extend({

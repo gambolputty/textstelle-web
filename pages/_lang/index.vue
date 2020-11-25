@@ -1,9 +1,7 @@
 <template>
   <div class="container">
     <div>
-      <NuxtLink to="de/Substantive">
-        index
-      </NuxtLink>
+      de
 
       <div class="links">
         <!-- <a
@@ -21,18 +19,16 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { Octokit } from '@octokit/rest'
+// import { Octokit } from '@octokit/rest'
 
 export default Vue.extend({
-  async asyncData () {
-    const octokit = new Octokit({ auth: process.env.GITHUB_SECRET })
-    const { data: entriesDe } = await octokit.request('GET /repos/gambolputty/textstelle/contents/de')
-    const { data: entriesEn } = await octokit.request('GET /repos/gambolputty/textstelle/contents/en')
-    const data = entriesDe.concat(entriesEn)
-    console.warn(data)
+  // async asyncData () {
+  //   const octokit = new Octokit({ auth: process.env.GITHUB_SECRET })
+  //   const { data } = await octokit.request('GET /repos/gambolputty/textstelle/contents/de')
+  //   console.warn(data)
 
-    return { data }
-  }
+  //   return { data }
+  // }
 })
 </script>
 
