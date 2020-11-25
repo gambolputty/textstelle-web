@@ -1,0 +1,47 @@
+// rem-Base
+$rem-baseline: 18px;
+
+// layout
+$page_width: rem(650px);
+
+$font1: 'Inconsolata', monospace;
+$font2: 'Roboto', sans-serif;
+$line_height: 1.414;
+
+// font sizes
+// http://www.modularscale.com/?18&px&1.25
+$fontsize_large: rem(28px);
+$fontsize_medium: rem(22px);
+$fontsize_normal: rem(18px);
+$fontsize_smaller: rem(16px);
+$fontsize_small: rem(14px);
+$fontsize_tiny: rem(12px);
+
+// margins and padding
+$margin_large: rem(60px);
+$margin_std: rem(40px);
+$margin_small: rem(30px);
+$margin_tiny: rem(20px);
+$margin_mini: rem(10px);
+
+// colors
+$white: #fff;
+$black: black;
+$blue: blue;
+$light_grey: #eee;
+$grey: #ddd;
+$medium_grey: #bbb;
+$dark_grey: #888;
+
+// break points
+$break1: 650px;
+
+// Misc
+$list_icon_margin_right: .4rem;
+
+@mixin userselect-off {
+  -webkit-user-select: none;  /* Chrome all / Safari all */
+  -moz-user-select: none;     /* Firefox all */
+  -ms-user-select: none;      /* IE 10+ */
+  user-select: none;          /* Likely future */
+}

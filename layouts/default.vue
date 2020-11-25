@@ -1,62 +1,117 @@
-<template>
-  <div>
-    <Nuxt />
-  </div>
+<template lang="pug">
+  div
+    Header
+    Nuxt(keep-alive)
+    Footer
 </template>
 
-<style>
+<script lang="ts">
+// import Vue from 'vue'
+
+// export default Vue.extend({
+//   mounted () {
+//     // console.warn(this.$route)
+//   }
+// })
+
+</script>
+
+<style lang="scss">
 html {
-  font-family:
-    'Source Sans Pro',
-    -apple-system,
-    BlinkMacSystemFont,
-    'Segoe UI',
-    Roboto,
-    'Helvetica Neue',
-    Arial,
-    sans-serif;
-  font-size: 16px;
-  word-spacing: 1px;
-  -ms-text-size-adjust: 100%;
-  -webkit-text-size-adjust: 100%;
-  -moz-osx-font-smoothing: grayscale;
-  -webkit-font-smoothing: antialiased;
-  box-sizing: border-box;
+  @include rem-baseline;
+  @media only screen and (max-width: $break1) {
+    @include rem-baseline(93.8%);
+  }
 }
 
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-  margin: 0;
+[v-cloak], [v-cloak] > * { display: none; }
+
+body {
+  font-family: $font1;
+  font-size: $fontsize_normal;
+  line-height: $line_height;
+  color: $black;
+  font-weight: 400;
 }
 
-.button--green {
-  display: inline-block;
-  border-radius: 4px;
-  border: 1px solid #3b8070;
-  color: #3b8070;
+h1 {
+  font-size: $fontsize_large;
+  margin: 0.67rem 0;
+}
+
+h2 {
+  font-size: $fontsize_medium;
+  line-height: $line_height - .3;
+  margin: 0.83rem 0;
+}
+
+h3 {
+  font-size: $fontsize_normal;
+  line-height: $line_height - .3;
+  margin: 0.83rem 0;
+}
+
+p { margin: 0 0 $line_height * 1 + rem; }
+
+blockquote {
+  position: relative;
+  //color: $dark_grey;
+  font-style: italic;
+  margin: $line_height + rem 2rem;
+  &:before {
+    top: -.75rem;
+    left: -1.25rem;
+    content: '“';
+  }
+  &:before {
+    font-weight: 400;
+    font-size: 2rem;
+    position: absolute;
+  }
+  @media only screen and (max-width: $break1) {
+    margin-left: 1.25rem;
+    margin-right: 1.25rem;
+  }
+}
+
+// readmes
+.markdown-body.entry-content {
+  font-family: 'Roboto', sans-serif;
+  .anchor { display: none; }
+  ul {
+    margin: 0;
+    padding: 0 1.5rem;
+    li {
+      line-height: $line_height*1.15 + rem;
+      ul {
+        padding: 0 1rem;
+      }
+    }
+  }
+}
+
+.wrapper {
+  max-width: $page_width;
+  margin: $line_height * 1.5 + rem auto 0;
+  padding: 0 .625rem;
+}
+
+.icon {
+  font-size: rem(26px);
+  &--dir {
+    // max-height: 1.8rem;
+  }
+  &--file {
+    // max-height: 1.65rem;
+  }
+  &--arrow-left {
+    // max-height: 1.65rem;
+    // width: 1.5rem;
+  }
+}
+
+a {
+  color: $blue;
   text-decoration: none;
-  padding: 10px 30px;
-}
-
-.button--green:hover {
-  color: #fff;
-  background-color: #3b8070;
-}
-
-.button--grey {
-  display: inline-block;
-  border-radius: 4px;
-  border: 1px solid #35495e;
-  color: #35495e;
-  text-decoration: none;
-  padding: 10px 30px;
-  margin-left: 15px;
-}
-
-.button--grey:hover {
-  color: #fff;
-  background-color: #35495e;
 }
 </style>

@@ -29,17 +29,12 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { Octokit } from '@octokit/rest'
-
-const octokit = new Octokit({
-  auth: process.env.GITHUB_SECRET
-})
 
 export default Vue.extend({
-  async asyncData ({ params }) {
-    const { lang, name } = params
+  async asyncData ({ params, $octokit }) {
+    const { lang, entry: name } = params
 
-    const { data } = await octokit.request(`GET /repos/gambolputty/textstelle/contents/${lang}/${name}`)
+    const { data } = await $octokit.request(`GET /repos/gambolputty/textstelle/contents/${lang}/${name}`)
     console.warn(data)
 
     return { data }
