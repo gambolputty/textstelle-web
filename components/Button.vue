@@ -1,6 +1,6 @@
 <template lang="pug">
   button(:class='classList')
-    font-awesome-icon.icon.button__icon(v-if='icon' :icon='icon' :pulse='pulse ? pulse : false')
+    font-awesome-icon.button__icon(v-if='icon' :icon='icon' :pulse='pulse ? pulse : false')
     span.button__text
       slot Button
 

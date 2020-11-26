@@ -1,47 +1,83 @@
-<template>
-  <div class="container">
-    <div>
-      <Logo />
-      <h1 class="title">
-        textstelle-web
-      </h1>
-      <div class="links">
-        <a
-          href="https://nuxtjs.org/"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="button--green"
-        >
-          Documentation
-        </a>
-        <a
-          href="https://github.com/nuxt/nuxt.js"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="button--grey"
-        >
-          GitHub
-        </a>
-      </div>
-    </div>
-  </div>
+<template lang="pug">
+  div
+    Button(@click.native='goBack' :icon="['fas', 'caret-left']") Back
+    .entry
+      .entry__head
+        font-awesome-icon.icon--dir(:icon="['far', 'folder-open']")
+        h2 {{ dirName }}
+      List(
+        :entries='files'
+        :isSubdir='true'
+      )
+      .readme(v-if='readme' v-html='readme')
+
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
 
 export default Vue.extend({
-  async asyncData ({ params, $octokit }) {
+  async asyncData ({ from, params, $axios }) {
     const { lang, entry: name } = params
+    const { data } = await $axios.get(`/entry/${lang}/${name}`)
+    const { dirName, readme, files } = data
 
-    const { data } = await $octokit.request(`GET /repos/gambolputty/textstelle/contents/${lang}/${name}`)
-    console.warn(data)
+    return {
+      dirName, readme, files, referSameSite: from !== null
+    }
+  },
 
-    return { data }
+  data () {
+    return {
+      dirName: 'Unknown',
+      referSameSite: false
+    }
+  },
+
+  methods: {
+    goBack () {
+      if (this.referSameSite) {
+        this.$router.go(-1)
+      } else {
+        this.$router.push('/')
+      }
+    }
+  },
+
+  head (): Object {
+    return {
+      title: this.dirName,
+      titleTemplate: '%s | ' + this.$config.siteTitle
+    }
   }
 })
 </script>
 
-<style>
+<style lang="scss">
+.entry {
+  background-color: #fff;
+  &__head {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    flex-wrap: nowrap;
+    align-items: center;
+    align-content: flex-start;
+    border-bottom: 1px solid #ddd;
+    margin-top: $line_height/2 + rem;
+    .icon--dir {
+      margin-right: $list_icon_margin_right;
+      width: 1.75rem;
+    }
+  }
+}
+
+.readme {
+  border: 1px solid #ddd;
+  margin-top: $line_height/2 + rem;
+  padding: .5rem 1rem;
+  //border-radius: 4px;
+  //box-shadow: 0 0px 4px 0 rgba(39, 39, 39, 0.15);
+}
 
 </style>

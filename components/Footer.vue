@@ -5,7 +5,7 @@
       target='_blank'
       rel='noopener noreferrer'
     )
-      font-awesome-icon.icon.icon--github(:icon="['fab', 'github']")
+      font-awesome-icon.icon--github(:icon="['fab', 'github']")
       span.github-link__text Textstelle on GitHub
 
 </template>
@@ -43,7 +43,7 @@ export default Vue.extend({
   }
   &__text { font-size: $fontsize_small; }
   .icon--github {
-    font-size: rem(24px);
+    font-size: rem(20px);
     margin-right: .25rem;
   }
 }

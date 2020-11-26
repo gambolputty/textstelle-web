@@ -11,17 +11,19 @@ export default Vue.extend({
   name: 'About',
 
   async asyncData ({ $octokit, from }) {
-    const { data: readmeContent } = await $octokit.request('GET /repos/gambolputty/textstelle/readme')
+    // const { data: readmeContent } = await $octokit.request('GET /repos/gambolputty/textstelle/readme')
     return {
-      readmeContent,
+      // readmeContent,
       referSameSite: from !== null
     }
   },
+
   data () {
     return {
       referSameSite: false
     }
   },
+
   methods: {
     goBack () {
       if (this.referSameSite) {

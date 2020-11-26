@@ -1,20 +1,23 @@
 <template lang="pug">
   div
+    //- Filterpanel
     .filterpanel
       .filterpanel__head Filter:
       .filterpanel__opt
         Switcher.filterpanel__value(
-          v-model='filter.lang.de'
           label='German'
-          @input='switchClick({enSwitch: false})'
+          :checked='filter.lang == "de"'
+          @click.native='switchClick({ filterLang: "de" })'
         )
         Switcher.filterpanel__value(
-          v-model='filter.lang.en'
           label='English'
-          @input='switchClick({deSwitch: false})'
+          :checked='filter.lang == "en"'
+          @click.native='switchClick({ filterLang: "en" })'
         )
+
+    //- Searchform
     form.searchform(
-      v-on:submit.prevent='onSubmit'
+      @submit.prevent='onSubmit'
     )
       label.searchform__label(for='searchbar') Search:
       input#searchbar.searchform__input(
@@ -26,77 +29,50 @@
         @keydown.up='up'
         @keydown.esc="searchQuery=''"
       )
+
+    //- List entries
+    List(
+      :entries='computedEntries'
+      :isSubdir='false'
+      :selectedIndex='selectorPos'
+    )
+    p(v-if='searchQuery.length && computedEntries.length === 0')
+      | No entries found for "{{searchQuery}}"
+
 </template>
 
 <script lang="ts">
+import { cloneDeep } from 'lodash'
 import Vue from 'vue'
-import { ReposGetContentResponseData } from '@octokit/types'
-
-interface Entry {
-  lang: string,
-  type: string,
-  name: string,
-  path: string,
-  size: number
-}
-
-const transformEntry = (lang: string, entry: ReposGetContentResponseData): Entry => ({
-  lang,
-  type: entry.type,
-  name: entry.name,
-  path: entry.path,
-  size: entry.size
-})
 
 export default Vue.extend({
   name: 'Index',
 
-  async asyncData ({ $octokit, route }) {
-    const { data: entriesDe } = await $octokit.request('GET /repos/gambolputty/textstelle/contents/de')
-    const { data: entriesEn } = await $octokit.request('GET /repos/gambolputty/textstelle/contents/en')
-    const entries: Entry[] = entriesDe.map(
-      (entry: ReposGetContentResponseData) => transformEntry('de', entry)
-    )
-      .concat(
-        entriesEn.map((entry: ReposGetContentResponseData) => transformEntry('en', entry))
-      )
+  async asyncData ({ $axios }) {
+    const { data } = await $axios.get('/index')
+    const entries = data.entries
 
-    // update filter
-    // const queryLang: string | null = route.query.lang || null
-    // if (
-    //   queryLang &&
-    //   ['de', 'en'].includes(queryLang)) {
-    //   vm.filter.lang[to.query.lang] = true
-    // }
     return { entries }
   },
 
   data () {
-    const entries: Entry[] = []
     return {
-      entries,
-      filter: {
-        lang: {
-          en: false,
-          de: false
-        }
-      },
+      entries: [],
+      filter: { lang: null },
       searchQuery: '',
       selectorPos: -1
     }
   },
 
   computed: {
-    computedEntries (): Entry[] {
-      const result: Entry[] = []
-      const entries = this.entries
+    computedEntries (): IndexEntry[] {
+      const result = []
+      const entries = cloneDeep(this.entries)
+      const filter = this.filter
 
       for (let i = 0, l = entries.length; i < l; i++) {
-        const entry = entries[i]
-        if (this.filter.lang.de && entry.lang !== 'de') {
-          continue
-        }
-        if (this.filter.lang.en && entry.lang !== 'en') {
+        const entry: IndexEntry = entries[i]
+        if (filter.lang && filter.lang !== entry.lang) {
           continue
         }
         if (this.searchQuery.length) {
@@ -110,36 +86,37 @@ export default Vue.extend({
         }
         result.push(entry)
       }
+
       return result
     }
   },
 
   mounted () {
-    console.warn(this.$formatBytes(21345))
+    this.updateFilter()
   },
 
   methods: {
-    switchClick ({ deSwitch, enSwitch }: { deSwitch?: boolean, enSwitch?: boolean }): void {
-      if (typeof deSwitch !== 'undefined') {
-        this.filter.lang.de = deSwitch
-      }
-      if (typeof enSwitch !== 'undefined') {
-        this.filter.lang.en = enSwitch
-      }
 
-      let routeParam = {}
-      if (this.filter.lang.de) {
-        routeParam = {
-          lang: 'de'
-        }
-      } else if (this.filter.lang.en) {
-        routeParam = {
-          lang: 'en'
+    updateFilter () {
+      const route = this.$route
+      const filter: IndexFilter = this.filter
+
+      if (route.query.lang !== null && typeof route.query.lang === 'string') {
+        const queryLang = route.query.lang
+        if (['de', 'en'].includes(queryLang)) {
+          filter.lang = queryLang
         }
       }
-      this.$router.replace({
-        query: routeParam
-      })
+    },
+
+    switchClick ({ filterLang }: { filterLang: string }): void {
+      const filter: IndexFilter = this.filter
+      let routeParam = {}
+
+      filter.lang = typeof filter.lang === 'string' && filter.lang === filterLang ? null : filterLang
+      routeParam = filter.lang ? { lang: filter.lang } : {}
+
+      this.$router.replace({ query: routeParam })
     },
 
     up () {
@@ -158,12 +135,7 @@ export default Vue.extend({
       if (this.selectorPos > -1) {
         const entry = this.computedEntries[this.selectorPos]
         if (entry.type === 'dir') {
-          this.$router.push({
-            path: 'entry',
-            query: {
-              path: entry.path
-            }
-          })
+          this.$router.push(entry.path)
         }
       } else {
         this.$forceUpdate()

@@ -1,5 +1,5 @@
 <template lang="pug">
-  div
+  .wrapper
     Header
     Nuxt(keep-alive)
     Footer
@@ -32,6 +32,7 @@ body {
   line-height: $line_height;
   color: $black;
   font-weight: 400;
+  overflow-y: scroll;
 }
 
 h1 {
@@ -96,19 +97,19 @@ blockquote {
   padding: 0 .625rem;
 }
 
-.icon {
-  font-size: rem(26px);
-  &--dir {
-    // max-height: 1.8rem;
-  }
-  &--file {
-    // max-height: 1.65rem;
-  }
-  &--arrow-left {
-    // max-height: 1.65rem;
-    // width: 1.5rem;
-  }
-}
+// .icon {
+//   font-size: rem(26px);
+//   &--dir {
+//     // max-height: 1.8rem;
+//   }
+//   &--file {
+//     // max-height: 1.65rem;
+//   }
+//   &--arrow-left {
+//     // max-height: 1.65rem;
+//     // width: 1.5rem;
+//   }
+// }
 
 a {
   color: $blue;
