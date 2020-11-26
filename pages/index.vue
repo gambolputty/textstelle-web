@@ -42,7 +42,6 @@
 </template>
 
 <script lang="ts">
-import { cloneDeep } from 'lodash'
 import Vue from 'vue'
 
 export default Vue.extend({
@@ -67,7 +66,7 @@ export default Vue.extend({
   computed: {
     computedEntries (): IndexEntry[] {
       const result = []
-      const entries = cloneDeep(this.entries)
+      const entries = this.entries
       const filter = this.filter
 
       for (let i = 0, l = entries.length; i < l; i++) {
