@@ -3,6 +3,7 @@
     .listitem(
       v-for='(entry, index) in entries'
       :key='entry.path'
+      :class="{ 'listitem--selected': selectedIndex >= 0 && selectedIndex === index }"
     )
       .listitem__icon
         font-awesome-icon.icon--dir(
@@ -33,16 +34,16 @@
         .listitem__download
           Button(
             :primary='true'
-            :icon="isPreparingDownload ? ['fas', 'spinner'] : undefined"
-            :pulse='isPreparingDownload ? true : false'
-            @click.native='download(entry.name, entry.url)'
+            :icon="isPreparingDownload === true ? ['fas', 'spinner'] : null"
+            :pulse='isPreparingDownload === true ? true : false'
+            @click.native='download(entry.name, entry.downloadUrl)'
           ) Download
 
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
-// const FileSaver = require('file-saver')
+import FileSaver from 'file-saver'
 
 export default Vue.extend({
   name: 'List',
@@ -58,7 +59,7 @@ export default Vue.extend({
     },
     selectedIndex: {
       type: Number,
-      default: 0
+      default: -1
     }
   },
 
@@ -70,24 +71,11 @@ export default Vue.extend({
 
   methods: {
 
-    download (filename: string, path: string) {
-      // const downloadStarted = true
-
-      // window.setTimeout(() => {
-      //   if (downloadStarted) {
-      //     this.isPreparingDownload = true
-      //   }
-      // }, 500)
-
-      // http({
-      //   url: path,
-      //   method: 'GET',
-      //   responseType: 'blob' // important
-      // }).then((response) => {
-      //   downloadStarted = false
-      //   this.isPreparingDownload = false
-      //   FileSaver.saveAs(new Blob([response.data]), filename)
-      // })
+    async download (filename: string, downloadUrl: string) {
+      this.isPreparingDownload = true
+      const response = await this.$axios.get(downloadUrl, { responseType: 'blob' })
+      this.isPreparingDownload = false
+      FileSaver.saveAs(new Blob([response.data]), filename)
     }
   }
 })
@@ -101,9 +89,6 @@ export default Vue.extend({
   justify-content: center;
   align-items: flex-start;
   align-content: flex-start;
-  #app.loading & * {
-    opacity: .8;
-  }
 }
 
 .listitem {

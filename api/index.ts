@@ -42,6 +42,13 @@ app.get('/index', async (req, res) => {
   res.json({ entries })
 })
 
+app.get('/about', async (req, res) => {
+  const api = getOctokitInstance()
+  const headers = { accept: 'application/vnd.github.VERSION.html' }
+  const { data } = await api.request('GET /repos/gambolputty/textstelle/readme', { headers })
+  res.json(data)
+})
+
 app.get('/entry/:lang/:name', async (req, res) => {
   const { lang, name } = req.params
   const api = getOctokitInstance()
@@ -49,6 +56,8 @@ app.get('/entry/:lang/:name', async (req, res) => {
   const repo = 'textstelle'
   const { data: files } = await api.repos.getContent({ owner, repo, path: `${lang}/${name}` })
   let readme = null
+  let readmeAtIndex = -1
+  // console.warn(files)
 
   // seperate readme and other files
   if (Array.isArray(files)) {
@@ -56,21 +65,27 @@ app.get('/entry/:lang/:name', async (req, res) => {
       const file: ReposGetContentResponseData = files[i]
 
       if (file.name.toLowerCase() === 'readme.md') {
-        readme = file
-        files.splice(i, 1)
-        break
+        readme = transformEntry(lang, file)
+        readmeAtIndex = i
+        continue
       }
+
+      files[i] = transformEntry(lang, file)
+    }
+
+    if (readme) {
+      // remove readme file from files array
+      files.splice(readmeAtIndex, 1)
+
+      // get readme contents
+      const headers = {
+        accept: 'application/vnd.github.VERSION.html'
+      }
+      const { data: readmeData } = await api.repos.getContent({ owner, repo, path: `${readme.path}`, headers })
+      readme = readmeData
     }
   }
 
-  // get readme contents
-  if (readme) {
-    const headers = {
-      accept: 'application/vnd.github.VERSION.html'
-    }
-    const { data: readmeData } = await api.repos.getContent({ owner, repo, path: `${readme.path}`, headers })
-    readme = readmeData
-  }
   res.json({ dirName: name, readme, files })
 })
 

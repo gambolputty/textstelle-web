@@ -19,7 +19,7 @@ import Vue from 'vue'
 export default Vue.extend({
   async asyncData ({ from, params, $axios }) {
     const { lang, entry: name } = params
-    const { data } = await $axios.get(`/entry/${lang}/${name}`)
+    const { data } = await $axios.get(`/entry/${lang}/${encodeURIComponent(name)}`)
     const { dirName, readme, files } = data
 
     return {

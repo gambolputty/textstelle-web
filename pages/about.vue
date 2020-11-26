@@ -10,10 +10,10 @@ import Vue from 'vue'
 export default Vue.extend({
   name: 'About',
 
-  async asyncData ({ $octokit, from }) {
-    // const { data: readmeContent } = await $octokit.request('GET /repos/gambolputty/textstelle/readme')
+  async asyncData ({ from, $axios }) {
+    const { data: readmeContent } = await $axios.get('/about')
     return {
-      // readmeContent,
+      readmeContent,
       referSameSite: from !== null
     }
   },
