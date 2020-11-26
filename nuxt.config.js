@@ -2,6 +2,8 @@ const metaTitle = process.env.PROJECT_TITLE
 const metaDescr = process.env.PROJECT_DESCRIPTION
 
 export default {
+  telemetry: false,
+
   // Target (https://go.nuxtjs.dev/config-target)
   target: 'static',
 
