@@ -1,10 +1,10 @@
 /* eslint-disable camelcase */
 import { Octokit } from '@octokit/rest'
-import { Endpoints } from '@octokit/types'
+import { components } from '@octokit/openapi-types'
 import bodyParser from 'body-parser'
 import express from 'express'
 
-type RepoEndpoint = Endpoints['GET /repos/{owner}/{repo}/contents/{path}']['response']['data']
+type RepoEndpoint = components['schemas']['content-file'];
 
 const app = express()
 app.use(bodyParser.json())
@@ -22,13 +22,16 @@ const getOctokitInstance = () => {
   return octokit
 }
 
-const transformEntry = (lang: string, entry: RepoEndpoint): IndexEntry => ({
+const transformEntry = (
+  lang: string,
+  entry: RepoEndpoint
+): IndexEntry => ({
   lang,
   type: entry.type,
   name: entry.name,
   path: entry.path,
   size: entry.size,
-  downloadUrl: entry.download_url
+  downloadUrl: entry.download_url || ''
 })
 
 app.get('/index', async (req, res) => {
@@ -64,7 +67,7 @@ app.get('/entry/:lang/:name', async (req, res) => {
   // seperate readme and other files
   if (Array.isArray(data)) {
     for (let i = 0, l = data.length; i < l; i++) {
-      const file: RepoEndpoint = data[i]
+      const file = data[i] as RepoEndpoint
 
       if (file.name.toLowerCase() === 'readme.md') {
         readme = transformEntry(lang, file)
