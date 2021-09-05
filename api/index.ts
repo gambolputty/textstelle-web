@@ -1,7 +1,9 @@
 import { Octokit } from '@octokit/rest'
-import { ReposGetContentResponseData } from '@octokit/types'
+import { Endpoints } from '@octokit/types'
 import bodyParser from 'body-parser'
 import express from 'express'
+
+type RepoEndpoint = Endpoints['GET /repos/{owner}/{repo}/contents/{path}']['response']['data']
 
 const app = express()
 app.use(bodyParser.json())
@@ -19,7 +21,7 @@ const getOctokitInstance = () => {
   return octokit
 }
 
-const transformEntry = (lang: string, entry: ReposGetContentResponseData): IndexEntry => ({
+const transformEntry = (lang: string, entry: RepoEndpoint): IndexEntry => ({
   lang,
   type: entry.type,
   name: entry.name,
@@ -33,10 +35,10 @@ app.get('/index', async (req, res) => {
   const { data: entriesDe } = await api.request('GET /repos/gambolputty/textstelle/contents/de')
   const { data: entriesEn } = await api.request('GET /repos/gambolputty/textstelle/contents/en')
   const entries: IndexEntry[] = entriesDe.map(
-    (entry: ReposGetContentResponseData) => transformEntry('de', entry)
+    (entry: RepoEndpoint) => transformEntry('de', entry)
   )
     .concat(
-      entriesEn.map((entry: ReposGetContentResponseData) => transformEntry('en', entry))
+      entriesEn.map((entry: RepoEndpoint) => transformEntry('en', entry))
     )
 
   res.json({ entries })
@@ -62,7 +64,7 @@ app.get('/entry/:lang/:name', async (req, res) => {
   // seperate readme and other files
   if (Array.isArray(files)) {
     for (let i = 0, l = files.length; i < l; i++) {
-      const file: ReposGetContentResponseData = files[i]
+      const file: RepoEndpoint = files[i]
 
       if (file.name.toLowerCase() === 'readme.md') {
         readme = transformEntry(lang, file)
