@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 import { Octokit } from '@octokit/rest'
 import { Endpoints } from '@octokit/types'
 import bodyParser from 'body-parser'
@@ -56,29 +57,24 @@ app.get('/entry/:lang/:name', async (req, res) => {
   const api = getOctokitInstance()
   const owner = 'gambolputty'
   const repo = 'textstelle'
-  const { data: files } = await api.repos.getContent({ owner, repo, path: `${lang}/${name}` })
+  const { data } = await api.repos.getContent({ owner, repo, path: `${lang}/${name}` })
+  const files = []
   let readme = null
-  let readmeAtIndex = -1
-  // console.warn(files)
 
   // seperate readme and other files
-  if (Array.isArray(files)) {
-    for (let i = 0, l = files.length; i < l; i++) {
-      const file: RepoEndpoint = files[i]
+  if (Array.isArray(data)) {
+    for (let i = 0, l = data.length; i < l; i++) {
+      const file: RepoEndpoint = data[i]
 
       if (file.name.toLowerCase() === 'readme.md') {
         readme = transformEntry(lang, file)
-        readmeAtIndex = i
         continue
       }
 
-      files[i] = transformEntry(lang, file)
+      files.push(transformEntry(lang, file))
     }
 
     if (readme) {
-      // remove readme file from files array
-      files.splice(readmeAtIndex, 1)
-
       // get readme contents
       const headers = {
         accept: 'application/vnd.github.VERSION.html'
