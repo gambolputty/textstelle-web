@@ -94,7 +94,16 @@ export default {
   // },
 
   // Content module configuration (https://go.nuxtjs.dev/config-content)
-  content: {},
+  content: {
+    nestedProperties: [
+      'files.lang',
+      'files.type',
+      'files.name',
+      'files.slug',
+      'files.size',
+      'files.downloadUrl'
+    ]
+  },
 
   // Build Configuration (https://go.nuxtjs.dev/config-build)
   build: {
