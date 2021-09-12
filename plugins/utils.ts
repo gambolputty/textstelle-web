@@ -1,4 +1,3 @@
-import Vue from 'vue'
 import { Plugin, Context } from '@nuxt/types'
 import { Inject } from '@nuxt/types/app'
 

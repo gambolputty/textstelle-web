@@ -2,7 +2,7 @@
   .list
     .listitem(
       v-for='(entry, index) in entries'
-      :key='entry.path'
+      :key='entry.slug'
       :class="{ 'listitem--selected': selectedIndex >= 0 && selectedIndex === index }"
     )
       .listitem__icon
@@ -17,7 +17,7 @@
       .listitem__label
         NuxtLink.listitem__link(
           v-if="entry.type === 'dir'"
-          :to="entry.path"
+          :to="entry.slug"
         ) {{ entry.name }}
         a.listitem__link(
           v-else-if="entry.type === 'file'"

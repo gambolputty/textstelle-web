@@ -7,7 +7,7 @@ interface IndexEntry {
   lang: string,
   type: string,
   name: string,
-  path: string,
+  slug: string,
   size: number,
   downloadUrl: string
 }

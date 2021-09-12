@@ -5,15 +5,23 @@
 </template>
 
 <script lang="ts">
+import { IContentDocument } from '@nuxt/content/types/content'
 import Vue from 'vue'
 
 export default Vue.extend({
   name: 'About',
 
-  async asyncData ({ from, $axios }) {
-    const { data: readmeContent } = await $axios.get('/about')
+  async asyncData ({ from, $content, error }) {
+    const document = await $content('about')
+      .fetch<IContentDocument>()
+      .catch(() => {
+        error({ statusCode: 404, message: 'Document not found' })
+      }) as IContentDocument
+
+    const { content } = document
+
     return {
-      readmeContent,
+      readmeContent: content,
       referSameSite: from !== null
     }
   },

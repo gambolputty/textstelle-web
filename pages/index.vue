@@ -42,15 +42,14 @@
 </template>
 
 <script lang="ts">
+import { IContentDocument } from '@nuxt/content/types/content'
 import Vue from 'vue'
 
 export default Vue.extend({
   name: 'Index',
 
-  async asyncData ({ $axios }) {
-    const { data } = await $axios.get('/index')
-    const entries = data.entries
-
+  async asyncData ({ $content }) {
+    const entries = await $content('index').fetch<IContentDocument[]>()
     return { entries }
   },
 
@@ -134,7 +133,7 @@ export default Vue.extend({
       if (this.selectorPos > -1) {
         const entry = this.computedEntries[this.selectorPos]
         if (entry.type === 'dir') {
-          this.$router.push(entry.path)
+          this.$router.push(entry.slug)
         }
       } else {
         this.$forceUpdate()

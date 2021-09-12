@@ -15,18 +15,8 @@ export default {
   publicRuntimeConfig: {
     baseURL: process.env.BASE_URL,
     siteTitle: process.env.PROJECT_TITLE,
-    siteDescription: process.env.PROJECT_DESCRIPTION,
-    axios: {
-      baseURL: process.env.BASE_URL + '/api'
-    }
+    siteDescription: process.env.PROJECT_DESCRIPTION
   },
-  privateRuntimeConfig: {
-    apiSecret: process.env.GITHUB_SECRET
-  },
-
-  serverMiddleware: [
-    { path: '/api', handler: '~/api/index.ts' }
-  ],
 
   // Global page headers (https://go.nuxtjs.dev/config-head)
   head: {
@@ -55,7 +45,6 @@ export default {
 
   // Plugins to run before rendering page (https://go.nuxtjs.dev/config-plugins)
   plugins: [
-    // '~/plugins/github.ts',
     '~/plugins/utils.ts'
   ],
 
