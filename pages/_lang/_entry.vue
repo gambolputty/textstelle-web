@@ -29,6 +29,7 @@ export default Vue.extend({
       }) as IContentDocument[]
 
     const { readme, files } = document
+    console.warn('test', { readme, files })
 
     return {
       name, readme, files, referSameSite: from !== null
@@ -38,6 +39,8 @@ export default Vue.extend({
   data () {
     return {
       name: 'Unknown',
+      readme: '',
+      files: [],
       referSameSite: false
     }
   },
