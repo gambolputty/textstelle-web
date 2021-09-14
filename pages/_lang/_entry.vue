@@ -20,7 +20,6 @@ import Vue from 'vue'
 export default Vue.extend({
   async asyncData ({ from, params, $content, error }) {
     const { lang, entry: name } = params
-    // const path = `${lang}/${encodeURIComponent(name)}`
     const [document] = await $content('entries')
       .where({ lang, name })
       .fetch<IContentDocument[]>()
@@ -29,6 +28,8 @@ export default Vue.extend({
       }) as IContentDocument[]
 
     const { readme, files } = document
+
+    console.warn('files', files)
 
     return {
       name, readme, files, referSameSite: from !== null
