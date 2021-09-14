@@ -69,6 +69,10 @@ export default Vue.extend({
     }
   },
 
+  mounted () {
+    console.warn(this.entries)
+  },
+
   methods: {
 
     async download (filename: string, downloadUrl: string) {
