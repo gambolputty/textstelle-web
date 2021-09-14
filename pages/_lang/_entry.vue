@@ -29,7 +29,6 @@ export default Vue.extend({
       }) as IContentDocument[]
 
     const { readme, files } = document
-    console.warn('test', { readme, files })
 
     return {
       name, readme, files, referSameSite: from !== null

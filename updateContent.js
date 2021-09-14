@@ -87,7 +87,14 @@ const getEntriesContent = async (octokit, entries) => {
 
     await delay(1500)
 
-    return { slug: path, lang, name, readme, files }
+    return {
+      slug: path,
+      type: 'dir',
+      lang,
+      name,
+      readme,
+      files
+    }
   })
 
   return await Promise.all(promises)
@@ -97,7 +104,6 @@ const run = async () => {
   const octokit = new Octokit({ auth: process.env.GITHUB_SECRET })
 
   const indexEntries = await getIndexEntries(octokit)
-  fs.writeFileSync('./content/index.json', JSON.stringify(indexEntries))
 
   const aboutHTML = await getAboutContent(octokit)
   fs.writeFileSync('./content/about.json', JSON.stringify({

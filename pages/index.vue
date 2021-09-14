@@ -49,7 +49,9 @@ export default Vue.extend({
   name: 'Index',
 
   async asyncData ({ $content }) {
-    const entries = await $content('index').fetch<IContentDocument[]>()
+    const entries = await $content('entries')
+      .only(['lang', 'type', 'name', 'slug'])
+      .fetch<IContentDocument[]>()
     return { entries }
   },
 
