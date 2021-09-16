@@ -19,17 +19,16 @@ import Vue from 'vue'
 
 export default Vue.extend({
   async asyncData ({ from, params, $content, error }) {
-    const { lang, entry: name } = params
+    const { lang, entry: slugName } = params
     const [document] = await $content('entries')
-      .where({ lang, name })
+      .where({ slug: `${lang}/${slugName}` })
+      .only(['name', 'readme', 'files'])
       .fetch<IContentDocument[]>()
       .catch(() => {
         error({ statusCode: 404, message: 'Document not found' })
       }) as IContentDocument[]
 
-    const { readme, files } = document
-
-    console.warn('files', files)
+    const { name, readme, files } = document
 
     return {
       name, readme, files, referSameSite: from !== null

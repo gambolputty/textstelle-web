@@ -3,6 +3,7 @@
 const fs = require('fs')
 const dotenv = require('dotenv')
 const { Octokit } = require('@octokit/rest')
+const slugify = require('slugify')
 
 dotenv.config()
 
@@ -14,7 +15,8 @@ const transformEntry = (
     lang,
     type,
     name,
-    slug: path
+    path,
+    slug: `${lang}/${slugify(name)}`
   }
 
   if (type === 'file') {
@@ -52,8 +54,7 @@ const getEntriesContent = async (octokit, entries) => {
   }
 
   const promises = entries.map(async (entry) => {
-    const { lang, name } = entry
-    const path = `${lang}/${name}`
+    const { lang, name, path, slug } = entry
     count += 1
 
     console.warn(`Getting entry ${count}: ${lang}/${name}`)
@@ -80,7 +81,7 @@ const getEntriesContent = async (octokit, entries) => {
         const headers = {
           accept: 'application/vnd.github.VERSION.html'
         }
-        const { data: readmeData } = await octokit.repos.getContent({ owner, repo, path: `${readme.slug}`, headers })
+        const { data: readmeData } = await octokit.repos.getContent({ owner, repo, path: `${readme.path}`, headers })
         readme = readmeData
       }
     }
@@ -88,8 +89,8 @@ const getEntriesContent = async (octokit, entries) => {
     await delay(1500)
 
     return {
-      slug: path,
       type: 'dir',
+      slug,
       lang,
       name,
       readme,

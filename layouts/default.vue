@@ -1,20 +1,9 @@
 <template lang="pug">
   .wrapper
     Header
-    Nuxt(keep-alive)
+    Nuxt
     Footer
 </template>
-
-<script lang="ts">
-// import Vue from 'vue'
-
-// export default Vue.extend({
-//   mounted () {
-//     // console.warn(this.$route)
-//   }
-// })
-
-</script>
 
 <style lang="scss">
 html {
